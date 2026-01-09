@@ -1,0 +1,6 @@
+name: Natural_Disaster_Plugin
+version: '1.0-SNAPSHOT'
+main: mochineko.natural_disaster.Main
+api-version: '1.20'
+authors: [ mochi__neko ]
+website: https://x.com/mc_mochineko
