@@ -10,7 +10,7 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         P2PEarthquakeAPI.startMonitor();
-        //P2PEEWAPI.startMonitor();
+        P2PEEWAPI.startMonitor();
     }
 
     @Override
