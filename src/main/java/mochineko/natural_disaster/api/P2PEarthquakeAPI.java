@@ -2,10 +2,13 @@ package mochineko.natural_disaster.api;
 
 import com.google.gson.Gson;
 import mochineko.natural_disaster.Main;
+import mochineko.natural_disaster.status.EarthquakeScaleType;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,6 +21,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * P2P地震APIです。
+ */
 public class P2PEarthquakeAPI extends DisasterAPI {
 
     private static BukkitTask task;
@@ -104,13 +110,18 @@ public class P2PEarthquakeAPI extends DisasterAPI {
         private String foreignTsunami;
         private Hypocenter hypocenter;
         private int maxScale;
-        private String name;
         private String time;
 
+        /**
+         * 国内への津波の有無を返す関数
+         */
         public String getDomesticTsunami() {
             return domesticTsunami;
         }
 
+        /**
+         * 海外での津波の有無を返す関数
+         */
         public String getForeignTsunami() {
             return foreignTsunami;
         }
@@ -119,14 +130,26 @@ public class P2PEarthquakeAPI extends DisasterAPI {
             return hypocenter;
         }
 
+        /**
+         * 最大震度を返す関数。
+         * @apiNote 震度情報が存在しない場合は、-1を返す。
+         */
         public int getMaxScale() {
             return maxScale;
         }
 
-        public String getName() {
-            return name;
+        /**
+         * 最大震度を変換された形で返す関数
+         */
+        @Nullable
+        public EarthquakeScaleType getMaxScaleType() {
+            return EarthquakeScaleType.convertP2PAPI(maxScale);
         }
 
+        /**
+         * 地震の発生時刻
+         */
+        @Nonnull
         public String getTime() {
             return time;
         }
@@ -143,22 +166,37 @@ public class P2PEarthquakeAPI extends DisasterAPI {
             private float magnitude;
             private String name;
 
+            /**
+             * 深さを返す関数
+             */
             public int getDepth() {
                 return depth;
             }
 
+            /**
+             * 緯度を返す関数
+             */
             public float getLatitude() {
                 return latitude;
             }
 
+            /**
+             * 経度を返す関数
+             */
             public float getLongitude() {
                 return longitude;
             }
 
+            /**
+             *　マグニチュードを返す関数
+             */
             public float getMagnitude() {
                 return magnitude;
             }
 
+            /**
+             * 震源名を返す関数
+             */
             public String getName() {
                 return name;
             }
@@ -192,6 +230,14 @@ public class P2PEarthquakeAPI extends DisasterAPI {
          */
         public int getScale() {
             return scale;
+        }
+
+        /**
+         * 震度を変換されたデータで返す関数
+         * @return {@link EarthquakeScaleType}　で返す
+         */
+        public EarthquakeScaleType getScaleType() {
+            return EarthquakeScaleType.convertP2PAPI(scale);
         }
 
     }
