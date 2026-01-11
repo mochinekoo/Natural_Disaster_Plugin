@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * P2P地震APIです。
@@ -55,6 +57,7 @@ public class P2PEarthquakeAPI extends DisasterAPI {
             Bukkit.getLogger().info("地震APIの監視を開始しました。");
             new BukkitRunnable() {
                 private static LocalDateTime beforeGetTime = LocalDateTime.MIN.plusMinutes(1);
+                StringBuilder builder = new StringBuilder();
                 @Override
                 public void run() {
                     try {
@@ -71,12 +74,26 @@ public class P2PEarthquakeAPI extends DisasterAPI {
                                 Bukkit.broadcastMessage("震源名：" + hypocenter.getName() + "\n" +
                                         "マグニチュード: " + hypocenter.getMagnitude() + "\n" +
                                         "深さ：" + hypocenter.getDepth());
-                                for (Point point : pointList) {
-                                    Bukkit.broadcastMessage("=======" + "\n" +
-                                            "観測点" +  point.getPref() + point.getAddr() + "\n" +
-                                            "震度:" + point.getScale() + "\n" +
-                                            "========");
+
+                                builder.append("----観測情報----" + "\n");
+                                for (Map.Entry<EarthquakeScaleType, List<Point>> entry : latestAPI.getScaleMap().entrySet()) {
+                                    /*
+                                    出力イメージ：震度3：石川県金沢市○○
+                                    　　　　　　　震度2：石川県穴水町○○
+                                     */
+
+                                    EarthquakeScaleType key = entry.getKey();
+                                    List<Point> value = entry.getValue();
+                                    builder.append(key.getName() + ":");
+                                    for (Point point : value) {
+                                        builder.append(point.getPref() + point.getAddr() + ",");
+                                    }
+                                    builder.append("\n");
                                 }
+                                builder.append("------------");
+
+                                Bukkit.broadcastMessage(builder.toString());
+
                                 beforeGetTime = earthquakeDate;
                             }
                         }
@@ -94,6 +111,18 @@ public class P2PEarthquakeAPI extends DisasterAPI {
 
     public Point[] getPoints() {
         return points;
+    }
+
+    public Map<EarthquakeScaleType, List<Point>> getScaleMap() {
+        Map<EarthquakeScaleType, List<Point>> map = new HashMap<>();
+        for (Point point : points) {
+            if (!map.containsKey(point.getScaleType())) {
+                map.put(point.getScaleType(), new ArrayList<>());
+            }
+            List<Point> list = map.get(point.getScaleType());
+            list.add(point);
+        }
+        return map;
     }
 
     public String getTime() {
