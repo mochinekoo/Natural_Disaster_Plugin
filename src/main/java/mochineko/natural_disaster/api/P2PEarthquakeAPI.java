@@ -130,7 +130,7 @@ public class P2PEarthquakeAPI extends DisasterAPI {
     }
 
     public LocalDateTime getLocalDateTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SS");
         return LocalDateTime.parse(time, formatter);
     }
 
