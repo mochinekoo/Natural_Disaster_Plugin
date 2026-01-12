@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -130,7 +132,10 @@ public class P2PEarthquakeAPI extends DisasterAPI {
     }
 
     public LocalDateTime getLocalDateTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SS");
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .appendPattern("yyyy/MM/dd HH:mm:ss")
+                .appendFraction(ChronoField.NANO_OF_SECOND, 2, 3, true)
+                .toFormatter();
         return LocalDateTime.parse(time, formatter);
     }
 
